@@ -30,6 +30,40 @@ app.get('/process_get', (req, res) => {
     res.send(response);
 })
 
+//send text
+/*
+app.post('/process_post', express.urlencoded({ extended: true }), (req, res) => {
+    var response = "<p>"+req.body.loginName+"</p><p>"+req.body.loginPassword+"</p>";
+    var loginName = req.body.loginName;
+    var loginPW = req.body.loginPassword;
+    var query = `SELECT * FROM USERS WHERE NAME = ?`;
+
+    db.query(query, [loginName], function(err, results){
+        if(err){
+            console.log(err);
+            return;
+        }
+        console.log(results[0])
+        if(results[0]){
+            if(results[0].PASSWORD == loginPW){
+            res.send(response);
+            return;
+            }
+        }
+        res.send("Incorrenct information");
+    });    
+})*/
+
+//send file
+
+app.post('/process_post', express.urlencoded({ extended: true }), (req, res) => {
+
+    var response = "<p>"+req.body.loginName+"</p><p>"+req.body.loginPassword+"</p>";
+    console.log(req.body.loginName)
+    console.log(response);
+    var response2 = __dirname + "/public/" + "index.html"; 
+    res.sendFile(response2); 
+})
 
 var server = app.listen(8081, () => {
     var host = server.address().address;
