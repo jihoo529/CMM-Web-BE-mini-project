@@ -2,7 +2,11 @@ var express = require('express');
 var router = express.Router();
 const path = require('path');
 var pathname = path.join(__dirname,'../');
-const { db } = require('./mysql');
+const { db } = require(pathname + "etc/mysql");
+const session = require('express-session');
+
+// Configure session middleware
+
 
 router.get('/', (req, res) => {
     res.sendFile( pathname + "public/login.html" );
@@ -24,12 +28,14 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) =>{
         
         if(results[0]){
             if(results[0].PASSWORD == loginPW){
-            res.sendFile(pathname + "public/index.html");
-            //res.send(response);
-            return;
+                req.session.loginName = loginName;
+                req.session.userId = results[0].ID;
+                res.sendFile(pathname + "public/index.html");
+                //res.send(response);
+                return;
             }
         }
-        res.send("Incorrenct information");
+        res.sendFile(pathname + "public/login_fail.html");
     });   
 })
 

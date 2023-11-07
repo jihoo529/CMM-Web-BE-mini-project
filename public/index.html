@@ -1,12 +1,51 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>hello world</head>
-    <body>
-        <h1>
-            Login successful
-        </h1>
+  <head>
+    <title>Login successfull</title>
+    <style>
+      .header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+      }
+
+      .logout-button {
+        margin-left: auto;
+      }
+
+      .create-post-button {
+        margin-top: 10px;
+      }
+
+      .post-form {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .content-input {
+        width: 300px;
+        height: 100px;
+      }
+    </style>
+    <script>
+      function showPostForm() {
+        var postForm = document.getElementById('post-form');
+        postForm.style.display = 'block';
+      }
+    </script>
+  </head>
+  <body>
+    <header class="header">
         <form action="http://127.0.0.1:8081/logout" method="GET"> 
-        <button type="submit">Logout</button>
+            <button class="logout-button">Logout</button>
         </form>
-    </body>
+    </header>
+    <button class="create-post-button" onclick="showPostForm()">Create Post</button>
+    <form id="post-form" class="post-form" action="http://127.0.0.1:8081/post" method="post">
+        <textarea class="content-input" name="content" placeholder="Enter your post" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+  </body>
 </html>
