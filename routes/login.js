@@ -1,28 +1,10 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-var mysql = require('mysql2');
 var pathname = path.join(__dirname,'../');
-
-var db = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'',
-    database:'TEST_DB'
-});
-
-db.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL:', err);
-      return;
-    }
-  
-    console.log('Connected to MySQL database');
-  });
+const { db } = require('./mysql');
 
 router.get('/', (req, res) => {
-    //res.send(pathname + "/public/login.html");
-    //console.log("hi");
     res.sendFile( pathname + "public/login.html" );
 })
 
