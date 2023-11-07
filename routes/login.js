@@ -51,4 +51,9 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) =>{
     });   
 })
 
+router.get('/logout', (req, res) => {
+    console.log("logout");
+    res.send("Logout successfully");
+})
+
 module.exports = router;
