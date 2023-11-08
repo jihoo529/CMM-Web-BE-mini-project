@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html>
   <head>
     <title>Login successfull</title>
@@ -43,9 +43,100 @@
         </form>
     </header>
     <button class="create-post-button" onclick="showPostForm()">Create Post</button>
-    <form id="post-form" class="post-form" action="http://127.0.0.1:8081/post" method="post">
+    <form id="post-form" class="post-form" action="http://127.0.0.1:8081/display/post" method="post">
         <textarea class="content-input" name="content" placeholder="Enter your post" required></textarea>
         <button type="submit">Submit</button>
     </form>
+  </body>
+</html>-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login successful</title>
+    <style>
+      .header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+      }
+
+      .logout-button {
+        margin-left: auto;
+      }
+
+      .create-post-button {
+        margin-top: 10px;
+      }
+
+      .post-form {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .content-input {
+        width: 300px;
+        height: 100px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+    <script>
+      function showPostForm() {
+        var postForm = document.getElementById('post-form');
+        postForm.style.display = 'block';
+      }
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <form action="http://127.0.0.1:8081/logout" method="GET">
+        <button class="logout-button">Logout</button>
+      </form>
+    </header>
+    <button class="create-post-button" onclick="showPostForm()">Create Post</button>
+    <form
+      id="post-form"
+      class="post-form"
+      action="http://127.0.0.1:8081/display/post"
+      method="post"
+    >
+      <textarea
+        class="content-input"
+        name="content"
+        placeholder="Enter your post"
+        required
+      ></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <table id="content-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Content</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(item) { %>
+        <tr>
+          <td><%= item.name %></td>
+          <td><%= item.content %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
   </body>
 </html>

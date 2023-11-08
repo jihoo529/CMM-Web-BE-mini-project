@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
 var login_router = require('./routes/login');
-var post_router = require('./routes/post');
+var display_router = require('./routes/display');
 var session = require('express-session');
+
+app.set('view engine', 'ejs');
 
 app.use(
   session({
@@ -13,7 +15,7 @@ app.use(
 );
 
 app.use('/', login_router);
-app.use('/post', post_router);
+app.use('/display', display_router);
 
 var server = app.listen(8081, () => {
     var host = server.address().address;
