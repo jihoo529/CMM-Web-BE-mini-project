@@ -66,7 +66,6 @@ router.get('/:name', (req, res)=>{
                                     
                                     const saveButton = document.createElement('button');
                                     saveButton.textContent = 'Save';
-
                                     saveButton.addEventListener('click', () => {
                                         console.log(contentId);
 
