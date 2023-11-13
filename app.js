@@ -13,7 +13,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.use(express.json());
 app.use('/', login_router);
 app.use('/display', display_router);
 

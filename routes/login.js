@@ -31,7 +31,7 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) =>{
                 req.session.loginName = loginName;
                 req.session.userId = results[0].ID;
                 //res.sendFile(pathname + "public/index.html");
-                res.redirect('display')
+                res.redirect(`/display/${loginName}`);
                 //res.send(response);
                 return;
             }
@@ -42,7 +42,10 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) =>{
 
 router.get('/logout', (req, res) => {
     console.log("logout");
-    res.send("Logout successfully");
+    req.session.loginName = null;
+    req.session.userId = null;
+    //res.send("Logout successfully");
+    res.redirect('/');
 })
 
 module.exports = router;
