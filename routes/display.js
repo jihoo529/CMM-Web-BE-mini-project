@@ -23,7 +23,7 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
         }
     });
 
-    const query = `SELECT user_id, content_id, content FROM contents`;
+    const query = `SELECT name, user_id, content_id, content FROM contents`;
     //console.log('loginname: ', req.body.name);
     //var loginName = req.body.name;
 
@@ -43,10 +43,10 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
                 let contentId = row.content_id;
                 console.log(row);
                 console.log(row.content);
-                console.log('row id: ', typeof (row.user_id));
-                console.log('sessionid: ', typeof (req.session.userId));
+                console.log('row id: ', row.user_id);
+                console.log('sessionid: ', req.session.userId);
                 if (row.user_id === req.session.userId) {
-                    console.log(row.name + row.content_id);
+                    console.log("output: ",loginName);
                     editButton = `<button onclick="showEditForm('${row.content.replace(/'/g, "\\'")}', '${row.content_id}')">Edit</button>`;
                     deleteButton = `<button onclick="deletePost('${row.content_id}')">Delete</button>`;
                 }
@@ -173,7 +173,7 @@ router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
             return;
         }
         else {
-            res.redirect('/display/' + req.session.loginName);
+            res.redirect('/display/');
         }
     })
 
@@ -213,7 +213,7 @@ router.post('/delete', (req, res) => {
             return;
         } else {
             console.log("deleted");
-            res.redirect('/display/' + req.params.name);
+            res.redirect('/display/');
         }
     })
 });
