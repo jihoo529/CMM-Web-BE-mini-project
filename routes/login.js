@@ -28,7 +28,7 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
 
         if (results[0]) {
             if (results[0].PASSWORD == loginPW) {
-                //req.session.loginName = loginName;
+                req.session.loginName = loginName;
                 req.session.userId = results[0].ID;
                 //res.sendFile(pathname + "public/index.html");
                 res.redirect('/display');

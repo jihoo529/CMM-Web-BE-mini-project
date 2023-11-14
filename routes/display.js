@@ -173,7 +173,7 @@ router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
             return;
         }
         else {
-            res.redirect('/display/');
+            res.redirect('/display');
         }
     })
 
@@ -197,7 +197,7 @@ router.post('/:name/edit/:contentId', (req, res) => {
         }
         else {
             console.log("updated");
-            res.redirect('/display/' + req.params.name);
+            res.redirect('/display');
         }
     })
 })
@@ -213,7 +213,7 @@ router.post('/delete', (req, res) => {
             return;
         } else {
             console.log("deleted");
-            res.redirect('/display/');
+            res.redirect('/display');
         }
     })
 });
