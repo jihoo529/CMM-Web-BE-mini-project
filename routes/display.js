@@ -50,6 +50,23 @@ router.get('/:name', (req, res)=>{
                     <head>
                         <title>Content List</title>
                         <script type="text/javascript">
+                            function deletePost() {
+                                fetch('/display/${loginName}/edit/'+contentId, {
+                                    method: 'POST',
+                                    // Add any necessary headers or body data
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                      },
+                                    body: JSON.stringify({ text: editBox.value })
+                                })
+                                .then(response => {
+                                    // Handle the response as needed
+                                })
+                                .catch(error => {
+                                    // Handle any errors that occur during the request
+                                });
+                            }
+
                             function showEditForm(content, contentId) {
                                 console.log(contentId);
                                 console.log(document.body.contains(document.getElementById(contentId+'box')));
@@ -167,4 +184,9 @@ router.post('/:name/edit/:contentId', (req, res) => {
         }
     })
 })
+
+router.get('/delete', (req, res) =>{
+    //delete contents
+})
+
 module.exports = router;
