@@ -2,23 +2,37 @@ const { table } = require('console');
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-var pathname = path.join(__dirname,'../');
+var pathname = path.join(__dirname, '../');
 const { db } = require(pathname + "etc/mysql");
 
-router.get('/:name', (req, res)=>{
+
+router.get('/', express.urlencoded({ extended: true }), (req, res) => {
     //res.sendFile(pathname+'public/index.html');
-    //res.send("hi");
+    console.log("sessionId:", req.session.userId);
+    const userId = req.session.userId;
+    const query1 = `SELECT name FROM contents WHERE user_id = ?`;
+    var loginName = '';
+    db.query(query1, [userId], function (error, results) {
+        if (error) {
+            console.log(error);
+            return;
+        } else {
+            console.log('results:', results);
+            loginName = results[0].name;
+            return;
+        }
+    });
 
-    const query = `SELECT name, content, content_id FROM contents`;
-    console.log('loginname: ', req.params.name);
-    var loginName = req.params.name;
+    const query = `SELECT user_id, content_id, content FROM contents`;
+    //console.log('loginname: ', req.body.name);
+    //var loginName = req.body.name;
 
-    db.query(query, function(error, results){
+    db.query(query, function (error, results) {
         if (error) {
             console.error('Error retrieving data:', error);
-        // Handle the error
+            // Handle the error
         } else {
-            console.log("########",results);
+            console.log("########", results);
             //const data = results; // Store the retrieved data in a variable
             // Render the HTML template with the data and send it as the response
             let tableRows = '';
@@ -27,11 +41,14 @@ router.get('/:name', (req, res)=>{
                 let editButton = '';
                 let deleteButton = '';
                 let contentId = row.content_id;
+                console.log(row);
                 console.log(row.content);
-                if (row.name === loginName) {
-                    console.log(row.name+row.content_id);
+                console.log('row id: ', typeof (row.user_id));
+                console.log('sessionid: ', typeof (req.session.userId));
+                if (row.user_id === req.session.userId) {
+                    console.log(row.name + row.content_id);
                     editButton = `<button onclick="showEditForm('${row.content.replace(/'/g, "\\'")}', '${row.content_id}')">Edit</button>`;
-                    deleteButton = `<button onclick="deletePost()">Delete</button>`;
+                    deleteButton = `<button onclick="deletePost('${row.content_id}')">Delete</button>`;
                 }
 
                 tableRows += `
@@ -50,14 +67,15 @@ router.get('/:name', (req, res)=>{
                     <head>
                         <title>Content List</title>
                         <script type="text/javascript">
-                            function deletePost() {
-                                fetch('/display/${loginName}/edit/'+contentId, {
+                            function deletePost(contentId) {
+                                console.log(contentId);
+                                fetch('/display/delete', {
                                     method: 'POST',
                                     // Add any necessary headers or body data
                                     headers: {
                                         'Content-Type': 'application/json'
                                       },
-                                    body: JSON.stringify({ text: editBox.value })
+                                    body: JSON.stringify({ key: contentId })
                                 })
                                 .then(response => {
                                     // Handle the response as needed
@@ -66,7 +84,6 @@ router.get('/:name', (req, res)=>{
                                     // Handle any errors that occur during the request
                                 });
                             }
-
                             function showEditForm(content, contentId) {
                                 console.log(contentId);
                                 console.log(document.body.contains(document.getElementById(contentId+'box')));
@@ -135,7 +152,7 @@ router.get('/:name', (req, res)=>{
                     </body>
             </html>
             `;
-            
+
             //console.log(html);
             //res.send('yes');
             res.send(html);
@@ -143,20 +160,20 @@ router.get('/:name', (req, res)=>{
     })
 })
 
-router.post('/post', express.urlencoded({ extended: true }), (req, res) =>{
+router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
     const content = req.body.content;
     const escapedContent = content.replace(/'/g, "''"); //escapted ' => single quote using ''
-    
+
     const query = `INSERT INTO contents (user_id, name, content) VALUES (${req.session.userId}, '${req.session.loginName}', '${escapedContent}')`;
     //res.send(`${req.session.loginName}: ${req.body.content}`);
 
-    db.query(query, function(err, result){
-        if(err){
+    db.query(query, function (err, result) {
+        if (err) {
             console.log(err);
             return;
         }
-        else{
-            res.redirect('/display/'+req.session.loginName);
+        else {
+            res.redirect('/display/' + req.session.loginName);
         }
     })
 
@@ -173,20 +190,32 @@ router.post('/:name/edit/:contentId', (req, res) => {
 
     const query = `UPDATE CONTENTS SET CONTENT = ? WHERE content_id = ?`;
 
-    db.query(query, [updatedText, contentId], function(err, result){
-        if(err){
+    db.query(query, [updatedText, contentId], function (err, result) {
+        if (err) {
             console.log(err);
             return;
         }
-        else{
+        else {
             console.log("updated");
-            res.redirect('/display/'+req.params.name);
+            res.redirect('/display/' + req.params.name);
         }
     })
 })
 
-router.get('/delete', (req, res) =>{
-    //delete contents
-})
+// delete function
+router.post('/delete', (req, res) => {
+    let contentId = req.body.key;
+    const deleteQuery = `DELETE FROM contents WHERE content_id = ?`;
+    console.log('############');
+    db.query(deleteQuery, [contentId], (err, result) => {
+        if (err) {
+            console.log('Error deleting data:', err);
+            return;
+        } else {
+            console.log("deleted");
+            res.redirect('/display/' + req.params.name);
+        }
+    })
+});
 
 module.exports = router;
