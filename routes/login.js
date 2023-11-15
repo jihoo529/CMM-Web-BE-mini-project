@@ -30,9 +30,8 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
             if (results[0].PASSWORD == loginPW) {
                 req.session.loginName = loginName;
                 req.session.userId = results[0].ID;
-                //res.sendFile(pathname + "public/index.html");
+            
                 res.redirect('/display');
-                //res.send(response);
                 return;
             }
         }
@@ -41,18 +40,13 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
 })
 
 router.get('/logout', (req, res) => {
-    console.log("logout");
     req.session.loginName = null;
     req.session.userId = null;
-    //res.send("Logout successfully");
     res.redirect('/');
 })
 
 router.get('/signup_page', (req, res) => {
-    //console.log(pathname);
     res.sendFile(pathname + "public/signup.html");
 })
-
-router.post('/signup')
 
 module.exports = router;

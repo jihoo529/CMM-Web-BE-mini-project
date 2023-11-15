@@ -7,45 +7,24 @@ const { db } = require(pathname + "etc/mysql");
 
 
 router.get('/', express.urlencoded({ extended: true }), (req, res) => {
-    //res.sendFile(pathname+'public/index.html');
     console.log("sessionId:", req.session.userId);
-    const userId = req.session.userId;
-    const query1 = `SELECT name FROM contents WHERE user_id = ?`;
-    var loginName = '';
-    db.query(query1, [userId], function (error, results) {
-        if (error) {
-            console.log(error);
-            return;
-        } else {
-            console.log('results:', results);
-            loginName = results[0].name;
-            return;
-        }
-    });
-
+    
     const query = `SELECT name, user_id, content_id, content FROM contents`;
-    //console.log('loginname: ', req.body.name);
-    //var loginName = req.body.name;
-
+    
     db.query(query, function (error, results) {
         if (error) {
             console.error('Error retrieving data:', error);
             // Handle the error
         } else {
-            console.log("########", results);
-            //const data = results; // Store the retrieved data in a variable
-            // Render the HTML template with the data and send it as the response
+            var loginName = req.session.loginName;
+            var userId = req.session.userId;
             let tableRows = '';
-
+            
             results.forEach((row) => {
                 let editButton = '';
                 let deleteButton = '';
-                let contentId = row.content_id;
-                console.log(row);
-                console.log(row.content);
-                console.log('row id: ', row.user_id);
-                console.log('sessionid: ', req.session.userId);
-                if (row.user_id === req.session.userId) {
+                
+                if (row.user_id === userId) {
                     console.log("output: ",loginName);
                     editButton = `<button onclick="showEditForm('${row.content.replace(/'/g, "\\'")}', '${row.content_id}')">Edit</button>`;
                     deleteButton = `<button onclick="deletePost('${row.content_id}')">Delete</button>`;
@@ -153,8 +132,6 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
             </html>
             `;
 
-            //console.log(html);
-            //res.send('yes');
             res.send(html);
         }
     })
@@ -165,7 +142,6 @@ router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
     const escapedContent = content.replace(/'/g, "''"); //escapted ' => single quote using ''
 
     const query = `INSERT INTO contents (user_id, name, content) VALUES (${req.session.userId}, '${req.session.loginName}', '${escapedContent}')`;
-    //res.send(`${req.session.loginName}: ${req.body.content}`);
 
     db.query(query, function (err, result) {
         if (err) {
@@ -176,15 +152,10 @@ router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
             res.redirect('/display');
         }
     })
-
     console.log(req.body.content);
 })
 
 router.post('/:name/edit/:contentId', (req, res) => {
-    //console.log(req.body.text);
-    //console.log(req.params.name);
-    //console.log(req.params.contentId);
-    console.log("saved");
     let updatedText = req.body.text;
     let contentId = req.params.contentId;
 
@@ -206,7 +177,7 @@ router.post('/:name/edit/:contentId', (req, res) => {
 router.post('/delete', (req, res) => {
     let contentId = req.body.key;
     const deleteQuery = `DELETE FROM contents WHERE content_id = ?`;
-    console.log('############');
+
     db.query(deleteQuery, [contentId], (err, result) => {
         if (err) {
             console.log('Error deleting data:', err);
