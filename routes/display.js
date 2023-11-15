@@ -83,7 +83,7 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
                                     saveButton.addEventListener('click', () => {
                                         console.log(contentId);
 
-                                        fetch('/display/${loginName}/edit/'+contentId, {
+                                        fetch('/display/edit/'+contentId, {
                                             method: 'POST',
                                             // Add any necessary headers or body data
                                             headers: {
@@ -112,7 +112,7 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
                             <form action="http://127.0.0.1:8081/logout" method="GET"><button class="logout-button">Logout</button></form>
                         </header>
                         <button class="create-post-button" onclick="showPostForm()">Create Post</button>
-                        <form id="post-form" class="post-form" action="http://127.0.0.1:8081/display/post" method="post">
+                        <form id="post-form" class="post-form" action="http://127.0.0.1:8081/display/post-content" method="post">
                             <textarea class="content-input" name="content" placeholder="Enter your post" required></textarea>
                             <button type="submit">Submit</button>
                         </form>
@@ -137,7 +137,7 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
     })
 })
 
-router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
+router.post('/post-content', express.urlencoded({ extended: true }), (req, res) => {
     const content = req.body.content;
     const escapedContent = content.replace(/'/g, "''"); //escapted ' => single quote using ''
 
@@ -155,7 +155,7 @@ router.post('/post', express.urlencoded({ extended: true }), (req, res) => {
     console.log(req.body.content);
 })
 
-router.post('/:name/edit/:contentId', (req, res) => {
+router.post('/edit/:contentId', (req, res) => {
     let updatedText = req.body.text;
     let contentId = req.params.contentId;
 
