@@ -75,6 +75,7 @@ router.post('/signup', express.urlencoded({ extended: true }), (req,res) =>{
                     console.error('Error inserting record:', err);
                     res.status(500).send('Error registering username.');
                 } else {
+                    var html = ``
                     res.send('Your username has been successfully registered.');
                 }
             });
