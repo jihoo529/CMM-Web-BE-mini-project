@@ -67,7 +67,7 @@ router.post('/signup', express.urlencoded({ extended: true }), (req,res) =>{
         }
 
         if(results.length > 0){
-            res.sendFile(pathname + "public/signup_fail.html")
+            res.send("Existing user, please go back to sign up");
         } else {
             var user = "INSERT INTO USERS (NAME, PASSWORD, IS_ADMIN) VALUES (?,?,?)";
             db.query(user, [signUpName, signUpPassword, 0], function(err, result) {
@@ -75,8 +75,13 @@ router.post('/signup', express.urlencoded({ extended: true }), (req,res) =>{
                     console.error('Error inserting record:', err);
                     res.status(500).send('Error registering username.');
                 } else {
-                    var html = ``
-                    res.send('Your username has been successfully registered.');
+                    var html = `
+                        <div class="container">
+                            <h2>Your username has been successfully registered.</h2>
+                            <a href="/" class="button">Go back to login</a>
+                        </div>
+                    `;
+                    res.send(html);
                 }
             });
         }
