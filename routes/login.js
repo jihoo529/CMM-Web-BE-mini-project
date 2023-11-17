@@ -32,7 +32,7 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
                 req.session.userId = results[0].ID;
             
                 res.redirect('/display');
-                return;
+
             }
         }
         res.sendFile(pathname + "public/login_fail.html");
@@ -40,6 +40,7 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
 })
 
 router.get('/logout', (req, res) => {
+    console.log("logout");
     req.session.loginName = null;
     req.session.userId = null;
     res.redirect('/');
@@ -48,5 +49,38 @@ router.get('/logout', (req, res) => {
 router.get('/signup_page', (req, res) => {
     res.sendFile(pathname + "public/signup.html");
 })
+
+router.get('/signup_page', (req, res) => {
+    //console.log(pathname);
+    res.sendFile(pathname + "public/signup.html");
+})
+
+router.post('/signup', express.urlencoded({ extended: true }), (req,res) =>{
+    var signUpName = req.body.signupName;
+    var signUpPassword = req.body.signupPassword;
+    var duplicateQuery = "SELECT * FROM USERS WHERE NAME = ?"
+    
+    db.query(duplicateQuery, [signUpName], function(err, results){
+        if(err){
+            console.log(err);
+            return;
+        }
+
+        if(results.length > 0){
+            res.sendFile(pathname + "public/signup_fail.html")
+        } else {
+            var user = "INSERT INTO USERS (NAME, PASSWORD, IS_ADMIN) VALUES (?,?,?)";
+            db.query(user, [signUpName, signUpPassword, 0], function(err, result) {
+                if (err) {
+                    console.error('Error inserting record:', err);
+                    res.status(500).send('Error registering username.');
+                } else {
+                    res.send('Your username has been successfully registered.');
+                }
+            });
+        }
+    }); 
+})
+
 
 module.exports = router;

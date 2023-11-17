@@ -131,7 +131,9 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
                     </body>
             </html>
             `;
-
+            
+            //console.log(html);
+            //res.send('yes');
             res.send(html);
         }
     })
@@ -140,7 +142,7 @@ router.get('/', express.urlencoded({ extended: true }), (req, res) => {
 router.post('/post-content', express.urlencoded({ extended: true }), (req, res) => {
     const content = req.body.content;
     const escapedContent = content.replace(/'/g, "''"); //escapted ' => single quote using ''
-
+    
     const query = `INSERT INTO contents (user_id, name, content) VALUES (${req.session.userId}, '${req.session.loginName}', '${escapedContent}')`;
 
     db.query(query, function (err, result) {
